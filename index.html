@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <button>show</button>
+
+    <tsf-document-overview>
+        <input tsf-value="name" tsf-bind-boolean-attribute-disabled="this.status ? 'Robin' === this.name : false" />
+        <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click">test</button>
+        <div tsf-html="this.name" tsf-html-render="this.render"></div>
+        <div tsf-for-of="test of testArray">
+            <div>
+                <button tsf-html="local.test"></button>
+            </div>
+        </div>
+    </tsf-document-overview>
+
+
+    <script src="./the-simple-framework.js"></script>
+
+    <script>
+        TSFRepository.registerClass(class DocumentOverview extends TSFView {
+            constructor() {
+                super();
+
+                this.state.name = 'Robin';
+                this.state.status = false;
+                this.state.html = "test";
+                this.state.testArray = [1, 2];
+            }
+
+            test(e, val) {
+                console.log(val);
+                this.state.testArray.push(false);
+            }
+
+            click(e) {
+                this.state.status = !this.state.status;
+                this.state.testArray.push(this.state.testArray.length);
+            }
+
+            render(val) {
+                return val + "test";
+            }
+        });
+    </script>
+</body>
+
+</html>
