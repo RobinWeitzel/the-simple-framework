@@ -1,0 +1,19 @@
+{
+  "name": "the-simple-framework",
+  "version": "0.0.1",
+  "description": "A simple alternative to massive frameworks like Angular.",
+  "main": "the-simple-framework.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobinWeitzel/the-simple-framework.git"
+  },
+  "author": "Robin Weitzel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RobinWeitzel/the-simple-framework/issues"
+  },
+  "homepage": "https://github.com/RobinWeitzel/the-simple-framework#readme"
+}
