@@ -81,22 +81,27 @@ class TSFView extends HTMLElement {
 
     eval(attributeValue, obj, controllerVariables, objectVariables) {
         let toBeEvaluated = attributeValue;
+        let args = [];
         for (const variable of controllerVariables) {
-            let value = this.state[variable];
-            if (typeof value === "string") {
-                if (toBeEvaluated.startsWith("'"))
-                    value = '"' + value + '"';
-                else
-                    value = "'" + value + "'";
-            }
-            toBeEvaluated = toBeEvaluated.replace('this.' + variable, value);
+            args.push(this.state[variable]);
+
+            toBeEvaluated = toBeEvaluated.replace('this.' + variable, `args[${args.length - 1}]`);
         }
 
-        for (const variable of objectVariables) {
+        for (let variable of objectVariables) {
+            const indexOnly = variable.endsWith('.index');
+            if(indexOnly)
+                variable = variable.replace('.index', '');
+
             if(obj[variable] && obj[variable].length === 2) {
                 const index = obj[variable][0];
                 const array = obj[variable][1];
-                toBeEvaluated = toBeEvaluated.replace('local.' + variable, array[index]);
+                if(indexOnly)
+                    toBeEvaluated = toBeEvaluated.replace('local.' + variable + '.index', index);
+                else {
+                    args.push(array[index]);
+                    toBeEvaluated = toBeEvaluated.replace('local.' + variable, `args[${args.length - 1}]`);
+                }
             } else {
                 toBeEvaluated = toBeEvaluated.replace('local.' + variable, "");
             }
@@ -104,7 +109,7 @@ class TSFView extends HTMLElement {
 
         let result;
         try {
-            result = eval(toBeEvaluated);
+            result = window.eval.call(window,'(function (args) {return ' + toBeEvaluated + '})')(args);
         } catch (e) {
             result = "";
         }
@@ -142,7 +147,7 @@ class TSFView extends HTMLElement {
             const objectVariables = [];
 
             const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-            const objectVariablesRegex = /local\.(.[A-z|_]+)/g;
+            const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
 
             let match;
             while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
@@ -184,7 +189,7 @@ class TSFView extends HTMLElement {
                 const objectVariables = [];
 
                 const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_]+)/g;
+                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
 
                 let match;
                 while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
@@ -221,7 +226,7 @@ class TSFView extends HTMLElement {
                 const objectVariables = [];
 
                 const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_]+)/g;
+                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
 
                 let match;
                 while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
@@ -269,7 +274,7 @@ class TSFView extends HTMLElement {
                     const objectVariables = [];
 
                     const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                    const objectVariablesRegex = /local\.(.[A-z|_]+)/g;
+                    const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
 
                     let match;
                     while ((match = controllerVariablesRegex.exec(variableName[1])) !== null) {
