@@ -17,9 +17,11 @@
         <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click">test</button>
         <div tsf-html="this.name" tsf-html-render="this.render"></div>
         <div tsf-for-of="test of testArray">
-            <div>
-                <button tsf-html="local.test.index"></button>
-            </div>
+            <tsf-b-view>
+                <div tsf-for-of="t of tt">
+                    <button tsf-html="local.test.index"></button>
+                </div>
+            </tsf-b-view>
         </div>
     </tsf-document-overview>
 
@@ -27,7 +29,7 @@
     <script src="./the-simple-framework.js"></script>
 
     <script>
-        TSFRepository.registerClass(class DocumentOverview extends TSFView {
+        TSFRepository.registerComponent(class DocumentOverview extends TSFView {
             constructor() {
                 super();
 
@@ -49,6 +51,14 @@
 
             render(val) {
                 return val + "test";
+            }
+        });
+
+        TSFRepository.registerComponent(class BView extends TSFView {
+            constructor() {
+                super();
+
+                this.state.tt = [3, 4];
             }
         });
     </script>

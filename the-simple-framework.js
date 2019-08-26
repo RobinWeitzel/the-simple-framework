@@ -1,7 +1,7 @@
 class TSFRepository {
     static classes = new Map();
 
-    static registerClass(c) {
+    static registerComponent(c) {
         TSFRepository.classes.set(c.name, c);
     }
 
@@ -117,9 +117,28 @@ class TSFView extends HTMLElement {
         return result;
     }
 
+    getRelevantChildren(elem) {
+        const result = [];
+
+        for(const child of elem.children) {
+            if(child.nodeName.startsWith('TSF-'))
+                continue;
+
+            result.push(child);
+
+            if(Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
+                result.push(...this.getRelevantChildren(child));
+            }
+        }
+
+        return result;
+    }
+
     attachBindings(elem) {
+        const objects = this.getRelevantChildren(elem);
+
         // Set up value binding
-        for (const obj of elem.querySelectorAll('*[tsf-value]')) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-value').length)) {
             const variableName = obj.getAttribute('tsf-value');
 
             // Listen for changes in the JS variable and transfer them to the DOM
@@ -140,7 +159,7 @@ class TSFView extends HTMLElement {
         }
 
         // Set up innerHTML binding
-        for (const obj of elem.querySelectorAll('*[tsf-html]')) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-html').length)) {
             const attributeValue = obj.getAttribute('tsf-html'); // Value to be evaluated
             let renderFunction = obj.getAttribute('tsf-html-render');
             const controllerVariables = [];
@@ -175,11 +194,7 @@ class TSFView extends HTMLElement {
         }
 
         // Set up attribute bindings
-        for (const obj of Array.from(elem.querySelectorAll('*'))
-            .filter(
-                e => Array.from(e.attributes).filter(
-                    ({ name, value }) => name.startsWith('tsf-bind-attribute-')).length
-            )) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-attribute-')).length)) {
             const attributes = Array.from(obj.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-attribute-'));
 
             for (const attribute of attributes) {
@@ -212,11 +227,7 @@ class TSFView extends HTMLElement {
         }
 
         // Set up boolean attribute bindings
-        for (const obj of Array.from(elem.querySelectorAll('*'))
-            .filter(
-                e => Array.from(e.attributes).filter(
-                    ({ name, value }) => name.startsWith('tsf-bind-boolean-attribute-')).length
-            )) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-boolean-attribute-')).length)) {
             const attributes = Array.from(obj.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-boolean-attribute-'));
 
             for (const attribute of attributes) {
@@ -257,11 +268,7 @@ class TSFView extends HTMLElement {
         }
 
         // Set up function bindings
-        for (const obj of Array.from(elem.querySelectorAll('*'))
-            .filter(
-                e => Array.from(e.attributes).filter(
-                    ({ name, value }) => name.startsWith('tsf-bind-function-')).length
-            )) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-function-')).length)) {
             const attributes = Array.from(obj.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-function-'));
 
             for (const attribute of attributes) {
@@ -304,13 +311,14 @@ class TSFView extends HTMLElement {
         }
 
         // Set up for loops
-        for (const obj of elem.querySelectorAll('*[tsf-for-of]')) {
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-for-of').length)) {
             const attributeContent = obj.getAttribute('tsf-for-of');
             const loopName = attributeContent.split('of')[0].trim();
             const variableName = attributeContent.split('of')[1].trim();
 
-            let template = document.createElement('template');
-            template.innerHTML = obj.innerHTML;
+            let template = obj.cloneNode(true);
+            this.mapProperties(obj, template);
+
             while (obj.firstChild) {
                 obj.removeChild(obj.firstChild);
             }
@@ -321,19 +329,29 @@ class TSFView extends HTMLElement {
                     obj.removeChild(obj.firstChild);
                 }
 
-                let index = 0;
-                for (const element of value) {
-                    const node = template.content.cloneNode(true);
-                    obj.appendChild(node);
+                for (let index = 0; index < value.length; index++) {
+                    for(let i = 0; i < template.children.length; i++) {
+                        let child = template.cloneNode(true).children[i];
+                        this.mapProperties(template.children[i], child);
+                        obj.appendChild(child);
+                    }
 
                     for (const child of obj.querySelectorAll('*:last-child *')) {
                         child[loopName] = child[loopName] || [index, value];
                     }
-
-                    index++;
                 }
                 this.attachBindings(obj);
             });
+        }
+    }
+
+    mapProperties(obj, template) {
+        for(let prop of Object.keys(obj)) {
+            template[prop] = obj[prop];
+        }
+
+        for(let i = 0; i < obj.children.length; i++) {
+            this.mapProperties(obj.children[i], template.children[i]);
         }
     }
 }
