@@ -14,7 +14,7 @@
 
     <tsf-document-overview>
         <input tsf-value="name" tsf-bind-boolean-attribute-disabled="this.status ? 'Robin' === this.name : false" />
-        <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click" tsf-bind-class-test="this.status">test</button>
+        <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click('test')" tsf-bind-class-test="this.status">test</button>
         <div tsf-html="this.name" tsf-html-render="this.render"></div>
         <div tsf-for-of="test of testArray" tsf-if="this.name === 'Robin'">
             <tsf-b-view>
@@ -44,7 +44,8 @@
                 this.state.testArray.push(false);
             }
 
-            click(e) {
+            click(e, test) {
+                console.log(test);
                 this.state.status = !this.state.status;
                 this.state.testArray.push(this.state.testArray.length);
             }

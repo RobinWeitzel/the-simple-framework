@@ -369,11 +369,10 @@ class TSFComponent extends HTMLElement {
                 const eventName = attribute.name.substr(18);
                 let functionName = attribute.value;
                 let variableName = /\((.+?)\)/.exec(functionName);
+                const controllerVariables = [];
+                const objectVariables = [];
 
                 if (variableName) {
-                    const controllerVariables = [];
-                    const objectVariables = [];
-
                     const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
                     const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
 
@@ -385,6 +384,8 @@ class TSFComponent extends HTMLElement {
                     while ((match = objectVariablesRegex.exec(variableName[1])) !== null) {
                         objectVariables.push(match[1]);
                     }
+
+                    functionName = functionName.replace(variableName[0], "");
                 }
 
                 let that = window;
