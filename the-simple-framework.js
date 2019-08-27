@@ -71,7 +71,7 @@ class TSFProxy {
     };
 }
 
-class TSFView extends HTMLElement {
+class TSFComponent extends HTMLElement {
     constructor() {
         super();
         this.state = new Proxy(new TSFProxy, TSFProxy.handler());
