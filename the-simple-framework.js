@@ -147,6 +147,45 @@ class TSFView extends HTMLElement {
     attachBindings(elem) {
         const objects = this.getRelevantChildren(elem);
 
+        // Set up ifs
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-if')).length)) {
+                const attributeValue = obj.getAttribute('tsf-if');; // Value to be evaluated
+                const controllerVariables = [];
+                const objectVariables = [];
+
+                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
+                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
+
+                let match;
+                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
+                    controllerVariables.push(match[1]);
+                }
+
+                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
+                    objectVariables.push(match[1]);
+                }
+
+                const display = obj.getAttribute('tsf-if-display') || "block";
+
+                // Set initial value
+                if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                    obj.style.display = display;
+                } else {
+                    obj.style.display = "none";
+                }
+                // Listen for changes in the JS variable and transfer them to the DOM
+                for (const variableName of controllerVariables) {
+                    const f = () => {
+                        if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                            obj.style.display = display;
+                        } else {
+                            obj.style.display = "none";
+                        }
+                    };
+                    this.state.registerDomChangeListener(variableName, f);
+                }
+        }
+
         // Set up value binding
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-value').length)) {
             const variableName = obj.getAttribute('tsf-value');
