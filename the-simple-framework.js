@@ -319,6 +319,48 @@ class TSFComponent extends HTMLElement {
             }
         }
 
+        // Set up class bindings
+        for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-class-')).length)) {
+            const attributes = Array.from(obj.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-class-'));
+
+            for (const attribute of attributes) {
+                const attributeName = attribute.name.substr(15);
+                const attributeValue = attribute.value; // Value to be evaluated
+                const controllerVariables = [];
+                const objectVariables = [];
+
+                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
+                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
+
+                let match;
+                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
+                    controllerVariables.push(match[1]);
+                }
+
+                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
+                    objectVariables.push(match[1]);
+                }
+
+                // Set initial value
+                if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                    obj.classList.add(attributeName);
+                } else {
+                    obj.classList.remove(attributeName);
+                }
+                // Listen for changes in the JS variable and transfer them to the DOM
+                for (const variableName of controllerVariables) {
+                    const f = () => {
+                        if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                            obj.classList.add(attributeName);
+                        } else {
+                            obj.classList.remove(attributeName);
+                        }
+                    };
+                    this.state.registerDomChangeListener(variableName, f);
+                }
+            }
+        }
+
         // Set up function bindings
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-function-')).length)) {
             const attributes = Array.from(obj.attributes).filter(({ name, value }) => name.startsWith('tsf-bind-function-'));
