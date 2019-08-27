@@ -74,8 +74,18 @@ class TSFProxy {
 class TSFView extends HTMLElement {
     constructor() {
         super();
-
         this.state = new Proxy(new TSFProxy, TSFProxy.handler());
+
+        const parentProperties = Object.keys(this.parentNode);
+        const children = this.querySelectorAll('*');
+        for(const prop of parentProperties) {
+            const parentValue = this.parentNode[prop];
+            this[prop] = this[prop] || parentValue;
+            for(const child of children) {
+                children[prop] = child[prop] || parentValue;
+            }
+        }
+
         this.attachBindings(this);
     }
 
@@ -187,9 +197,10 @@ class TSFView extends HTMLElement {
             obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj, controllerVariables, objectVariables)) : this.eval(attributeValue, obj, controllerVariables, objectVariables);
             // Listen for changes in the JS variable and transfer them to the DOM
             for (const variableName of controllerVariables) {
-                this.state.registerDomChangeListener(variableName, () => {
+                const f = () => {
                     obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj, controllerVariables, objectVariables)) : this.eval(attributeValue, obj, controllerVariables, objectVariables);
-                });
+                };
+                this.state.registerDomChangeListener(variableName, f);
             }
         }
 
@@ -219,9 +230,10 @@ class TSFView extends HTMLElement {
                 obj.setAttribute(attributeName, this.eval(attributeValue, obj, controllerVariables, objectVariables));
                 // Listen for changes in the JS variable and transfer them to the DOM
                 for (const variableName of controllerVariables) {
-                    this.state.registerDomChangeListener(variableName, () => {
+                    const f = () => {
                         obj.setAttribute(attributeName, this.eval(attributeValue, obj, controllerVariables, objectVariables));
-                    });
+                    };
+                    this.state.registerDomChangeListener(variableName, f);
                 }
             }
         }
@@ -256,13 +268,14 @@ class TSFView extends HTMLElement {
                 }
                 // Listen for changes in the JS variable and transfer them to the DOM
                 for (const variableName of controllerVariables) {
-                    this.state.registerDomChangeListener(variableName, () => {
+                    const f = () => {
                         if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
                             obj.setAttribute(attributeName, null);
                         } else {
                             obj.removeAttribute(attributeName);
                         }
-                    });
+                    };
+                    this.state.registerDomChangeListener(variableName, f);
                 }
             }
         }
@@ -316,11 +329,23 @@ class TSFView extends HTMLElement {
             const loopName = attributeContent.split('of')[0].trim();
             const variableName = attributeContent.split('of')[1].trim();
 
-            let template = obj.cloneNode(true);
-            this.mapProperties(obj, template);
-
+            let template = document.createElement('template');
+            template.innerHTML = obj.innerHTML;
             while (obj.firstChild) {
                 obj.removeChild(obj.firstChild);
+            }
+
+            if(this.state[variableName] && this.state[variableName].length > 1) {
+                const value = this.state[variableName] ;
+                for (let index = 0; index < value.length; index++) {
+                    const node = template.content.cloneNode(true);
+                    obj.appendChild(node);
+    
+                    for (const child of obj.querySelectorAll('*')) {
+                        child[loopName] = child[loopName] || [index, value];
+                    }
+                }
+                this.attachBindings(obj);
             }
 
             // Listen for changes in the JS variable and transfer them to the DOM
@@ -330,13 +355,10 @@ class TSFView extends HTMLElement {
                 }
 
                 for (let index = 0; index < value.length; index++) {
-                    for(let i = 0; i < template.children.length; i++) {
-                        let child = template.cloneNode(true).children[i];
-                        this.mapProperties(template.children[i], child);
-                        obj.appendChild(child);
-                    }
+                    const node = template.content.cloneNode(true);
+                    obj.appendChild(node);
 
-                    for (const child of obj.querySelectorAll('*:last-child *')) {
+                    for (const child of obj.querySelectorAll('*')) {
                         child[loopName] = child[loopName] || [index, value];
                     }
                 }
@@ -346,13 +368,20 @@ class TSFView extends HTMLElement {
     }
 
     mapProperties(obj, template) {
+        const result = [];
+
         for(let prop of Object.keys(obj)) {
             template[prop] = obj[prop];
         }
 
+        if(template.nodeName.startsWith('TSF-'))
+            result.push(template);
+
         for(let i = 0; i < obj.children.length; i++) {
-            this.mapProperties(obj.children[i], template.children[i]);
+            result.push(...this.mapProperties(obj.children[i], template.children[i]));
         }
+
+        return result;
     }
 }
 

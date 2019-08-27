@@ -17,11 +17,9 @@
         <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click">test</button>
         <div tsf-html="this.name" tsf-html-render="this.render"></div>
         <div tsf-for-of="test of testArray">
-            <tsf-b-view>
                 <div tsf-for-of="t of tt">
-                    <button tsf-html="local.test.index"></button>
+                    <button tsf-html="local.test.index" tsf-bind-function-click="this.click"></button>
                 </div>
-            </tsf-b-view>
         </div>
     </tsf-document-overview>
 
@@ -37,6 +35,7 @@
                 this.state.status = false;
                 this.state.html = "test";
                 this.state.testArray = [1, 2];
+                this.state.tt = [3, 4, 5];
             }
 
             test(e, val) {
@@ -58,7 +57,11 @@
             constructor() {
                 super();
 
-                this.state.tt = [3, 4];
+                this.state.tt = [3, 4, 5];
+            }
+
+            click(e) {
+                this.state.tt.push(1);
             }
         });
     </script>
