@@ -12,6 +12,33 @@ class TSFRepository {
     static afterLoad() {
         
     }
+
+    static getRelevantChildren(elem) {
+        const result = [];
+
+        for(const child of elem.children) {
+            result.push(child);
+
+            if(!child.nodeName.startsWith('TSF-') && Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
+                result.push(...TSFRepository.getRelevantChildren(child));
+            }
+        }
+
+        return result;
+    }
+
+    static getCustomElements(elem) {
+        const result = [];
+
+        for(const child of elem.children) {
+            if(child.nodeName.startsWith('TSF-'))
+                result.push(child);
+
+            result.push(...TSFRepository.getCustomElements(child));
+        }
+
+        return result;
+    }
 }
 
 class TSFProxy {
@@ -86,7 +113,14 @@ class TSFComponent extends HTMLElement {
             }
         }
 
+        if(window.getComputedStyle(this) !== 'none')
+            this.onShow();
+
         this.attachBindings(this);
+    }
+
+    onShow() {
+
     }
 
     eval(attributeValue, obj, controllerVariables, objectVariables) {
@@ -127,22 +161,8 @@ class TSFComponent extends HTMLElement {
         return result;
     }
 
-    getRelevantChildren(elem) {
-        const result = [];
-
-        for(const child of elem.children) {
-            result.push(child);
-
-            if(!child.nodeName.startsWith('TSF-') && Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
-                result.push(...this.getRelevantChildren(child));
-            }
-        }
-
-        return result;
-    }
-
     attachBindings(elem) {
-        const objects = this.getRelevantChildren(elem);
+        const objects = TSFRepository.getRelevantChildren(elem);
 
         // Set up ifs
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-if')).length)) {
@@ -167,6 +187,9 @@ class TSFComponent extends HTMLElement {
                 // Set initial value
                 if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
                     obj.style.display = display;
+                    for(const customElement of TSFRepository.getCustomElements(obj)) {
+                        customElement.onShow();
+                    }
                 } else {
                     obj.style.display = "none";
                 }
@@ -175,6 +198,10 @@ class TSFComponent extends HTMLElement {
                     const f = () => {
                         if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
                             obj.style.display = display;
+                            for(const customElement of TSFRepository.getCustomElements(obj)) {
+                                if(customElement.onShow)
+                                    customElement.onShow();
+                            }
                         } else {
                             obj.style.display = "none";
                         }
@@ -465,10 +492,10 @@ class TSFComponent extends HTMLElement {
 }
 
 const parseDom = event => {
-    const customElements = document.evaluate("//*[starts-with(name(),'tsf-')]", document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    const customElements = TSFRepository.getCustomElements(document);
 
-    for (let i = 0; i < customElements.snapshotLength; i++) {
-        const node = customElements.snapshotItem(i);
+    for (let i = 0; i < customElements.length; i++) {
+        const node = customElements[i];
         const name = node.nodeName.toLowerCase();
 
         if (!document.createElement(name).constructor !== HTMLElement) {
