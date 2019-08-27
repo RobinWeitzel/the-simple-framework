@@ -131,12 +131,9 @@ class TSFComponent extends HTMLElement {
         const result = [];
 
         for(const child of elem.children) {
-            if(child.nodeName.startsWith('TSF-'))
-                continue;
-
             result.push(child);
 
-            if(Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
+            if(!child.nodeName.startsWith('TSF-') && Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
                 result.push(...this.getRelevantChildren(child));
             }
         }
