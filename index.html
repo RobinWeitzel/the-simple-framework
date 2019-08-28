@@ -13,7 +13,7 @@
     <button>show</button>
 
     <tsf-document-overview>
-        <input tsf-value="name" tsf-bind-boolean-attribute-disabled="this.status ? 'Robin' === this.name : false" />
+        <textarea tsf-value="name" tsf-bind-boolean-attribute-disabled="this.status ? 'Robin' === this.name : false"></textarea>
         <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click('test')" tsf-bind-class-test="this.status">test</button>
         <div tsf-html="this.name" tsf-html-render="this.render"></div>
         <div tsf-for-of="test of testArray" tsf-if="this.name === 'Robin'">

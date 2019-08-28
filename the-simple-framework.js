@@ -63,6 +63,14 @@ class TSFProxy {
         };
     }
 
+    overwriteJsChangeListener(name, callback) {
+        this._jsChange[name] = callback;
+    }
+
+    overwriteDomChangeListener(name, callback) {
+        this._domChange[name] = callback;
+    }
+
     static handler(context, name) {
         return {
             get: function (target, name) {
