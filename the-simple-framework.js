@@ -71,20 +71,32 @@ class TSFProxy {
         this._domChange[name] = callback;
     }
 
+    static generateProxies(target, key, value) {
+        if (typeof value !== 'object') {
+            return value;
+        }
+
+        for(let k of Object.keys(value)) {
+            value[k] = TSFProxy.generateProxies(target, key, value[k]);
+        }
+        
+        value = new Proxy(value, TSFProxy.handler(target, key));
+
+        return value;
+    }
+
     static handler(context, name) {
         return {
             get: function (target, name) {
                 return name in target ? target[name] : "";
             },
             set: function (target, key, value) {
-                if (typeof value === 'object') {
-                    value = new Proxy(value, TSFProxy.handler(target, key));
-                }
+                value = TSFProxy.generateProxies(target, key, value);
 
                 target[key] = value;
                 if (context) {
                     if (name in context['_domChange'])
-                        context['_domChange'][name](target);
+                        context['_domChange'][name](context[name]);
                 } else {
                     if (key in target['_domChange'])
                         target['_domChange'][key](value);

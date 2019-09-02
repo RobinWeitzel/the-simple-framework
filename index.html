@@ -11,6 +11,7 @@
 
 <body>
     <tsf-document-overview>
+        <button tsf-bind-function-click="this.click">Test</button>
         <div tsf-for-of="test of testArray">
             <p tsf-html="local.test['name']"></p>
         </div>
@@ -23,10 +24,6 @@
         TSFRepository.registerComponent(class DocumentOverview extends TSFComponent {
             constructor() {
                 super();
-
-                this.state.name = 'Robin';
-                this.state.status = false;
-                this.state.html = "test";
                 this.state.testArray = [{
                     name: "Robin",
                     selected: false
@@ -39,9 +36,7 @@
             }
 
             click(e, test) {
-                console.log(test);
-                this.state.status = !this.state.status;
-                this.state.testArray.push(this.state.testArray.length);
+                this.state.testArray[0].name = "Test";
             }
 
             render(val) {
