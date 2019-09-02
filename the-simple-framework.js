@@ -212,6 +212,8 @@ class TSFComponent extends HTMLElement {
             // Set initial value
             if (result) {
                 obj.style.display = display;
+                if(obj.onShow)
+                    obj.onShow();
                 for (const customElement of TSFRepository.getCustomElements(obj)) {
                     customElement.onShow();
                 }
@@ -223,6 +225,8 @@ class TSFComponent extends HTMLElement {
                 const f = () => {
                     if (this.eval(attributeValue, obj)) {
                         obj.style.display = display;
+                        if(obj.onShow)
+                            obj.onShow();
                         for (const customElement of TSFRepository.getCustomElements(obj)) {
                             if (customElement.onShow)
                                 customElement.onShow();
