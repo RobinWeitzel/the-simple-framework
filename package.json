@@ -1,6 +1,6 @@
 {
   "name": "the-simple-framework",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A simple alternative to massive frameworks like Angular.",
   "main": "the-simple-framework.js",
   "scripts": {
