@@ -137,8 +137,8 @@ class TSFComponent extends HTMLElement {
         const controllerVariables = [];
         const objectVariables = [];
 
-        const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-        const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
+        const controllerVariablesRegex = /this\.(.[a-zA-Z|_]+)/g;
+        const objectVariablesRegex = /local\.(.[a-zA-Z|_|\.]+)/g;
 
         let match;
         while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {

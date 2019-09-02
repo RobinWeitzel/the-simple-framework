@@ -10,18 +10,9 @@
 </head>
 
 <body>
-    <button>show</button>
-
     <tsf-document-overview>
-        <textarea tsf-value="name" tsf-bind-boolean-attribute-disabled="this.status ? 'Robin' === this.name : false"></textarea>
-        <button tsf-bind-attribute-status="this.status" tsf-bind-function-click="this.click('test')" tsf-bind-class-test="this.status">test</button>
-        <div tsf-html="this.name" tsf-html-render="this.render"></div>
-        <div tsf-for-of="test of testArray" tsf-if="this.name === 'Robin'">
-            <tsf-b-view>
-                <div tsf-for-of="t of tt">
-                    <button tsf-html="local.t.index" tsf-bind-function-click="this.click"></button>
-                </div>
-            </tsf-b-view>
+        <div tsf-for-of="test of testArray">
+            <p tsf-html="local.test['name']"></p>
         </div>
     </tsf-document-overview>
 
@@ -36,7 +27,10 @@
                 this.state.name = 'Robin';
                 this.state.status = false;
                 this.state.html = "test";
-                this.state.testArray = [1, 2];
+                this.state.testArray = [{
+                    name: "Robin",
+                    selected: false
+                }];
             }
 
             test(e, val) {
