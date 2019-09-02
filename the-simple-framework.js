@@ -72,7 +72,7 @@ class TSFProxy {
     }
 
     static generateProxies(target, key, value) {
-        if (typeof value !== 'object') {
+        if (value && typeof value !== 'object') {
             return value;
         }
 
