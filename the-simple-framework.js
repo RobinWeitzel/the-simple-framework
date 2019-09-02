@@ -10,16 +10,16 @@ class TSFRepository {
     }
 
     static afterLoad() {
-        
+
     }
 
     static getRelevantChildren(elem) {
         const result = [];
 
-        for(const child of elem.children) {
+        for (const child of elem.children) {
             result.push(child);
 
-            if(!child.nodeName.startsWith('TSF-') && Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
+            if (!child.nodeName.startsWith('TSF-') && Array.from(child.attributes).filter(({ name, value }) => name === 'tsf-for-of').length === 0) {
                 result.push(...TSFRepository.getRelevantChildren(child));
             }
         }
@@ -30,8 +30,8 @@ class TSFRepository {
     static getCustomElements(elem) {
         const result = [];
 
-        for(const child of elem.children) {
-            if(child.nodeName.startsWith('TSF-'))
+        for (const child of elem.children) {
+            if (child.nodeName.startsWith('TSF-'))
                 result.push(child);
 
             result.push(...TSFRepository.getCustomElements(child));
@@ -113,15 +113,15 @@ class TSFComponent extends HTMLElement {
 
         const parentProperties = Object.keys(this.parentNode);
         const children = this.querySelectorAll('*');
-        for(const prop of parentProperties) {
+        for (const prop of parentProperties) {
             const parentValue = this.parentNode[prop];
             this[prop] = this[prop] || parentValue;
-            for(const child of children) {
+            for (const child of children) {
                 children[prop] = child[prop] || parentValue;
             }
         }
 
-        if(window.getComputedStyle(this) !== 'none')
+        if (window.getComputedStyle(this) !== 'none')
             this.onShow();
 
         this.attachBindings(this);
@@ -131,9 +131,23 @@ class TSFComponent extends HTMLElement {
 
     }
 
-    eval(attributeValue, obj, controllerVariables, objectVariables) {
+    eval(attributeValue, obj, returnVariables) {
         let toBeEvaluated = attributeValue;
         let args = [];
+        const controllerVariables = [];
+        const objectVariables = [];
+
+        const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
+        const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
+
+        let match;
+        while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
+            controllerVariables.push(match[1]);
+        }
+
+        while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
+            objectVariables.push(match[1]);
+        }
         for (const variable of controllerVariables) {
             args.push(this.state[variable]);
 
@@ -142,13 +156,13 @@ class TSFComponent extends HTMLElement {
 
         for (let variable of objectVariables) {
             const indexOnly = variable.endsWith('.index');
-            if(indexOnly)
+            if (indexOnly)
                 variable = variable.replace('.index', '');
 
-            if(obj[variable] && obj[variable].length === 2) {
+            if (obj[variable] && obj[variable].length === 2) {
                 const index = obj[variable][0];
                 const array = obj[variable][1];
-                if(indexOnly)
+                if (indexOnly)
                     toBeEvaluated = toBeEvaluated.replace('local.' + variable + '.index', index);
                 else {
                     args.push(array[index]);
@@ -161,12 +175,15 @@ class TSFComponent extends HTMLElement {
 
         let result;
         try {
-            result = window.eval.call(window,'(function (args) {return ' + toBeEvaluated + '})')(args);
+            result = window.eval.call(window, '(function (args) {return ' + toBeEvaluated + '})')(args);
         } catch (e) {
             result = "";
         }
 
-        return result;
+        if(returnVariables) 
+            return [result, controllerVariables, objectVariables];
+        else
+            return result;
     }
 
     attachBindings(elem) {
@@ -174,48 +191,36 @@ class TSFComponent extends HTMLElement {
 
         // Set up ifs
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name.startsWith('tsf-if')).length)) {
-                const attributeValue = obj.getAttribute('tsf-if');; // Value to be evaluated
-                const controllerVariables = [];
-                const objectVariables = [];
+            const attributeValue = obj.getAttribute('tsf-if');; // Value to be evaluated
+            const display = obj.getAttribute('tsf-if-display') || "block";
 
-                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
+            let result, controllerVariables, objectVariables;
+            [result, controllerVariables, objectVariables] = this.eval(attributeValue, obj, true);
 
-                let match;
-                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
-                    controllerVariables.push(match[1]);
+            // Set initial value
+            if (result) {
+                obj.style.display = display;
+                for (const customElement of TSFRepository.getCustomElements(obj)) {
+                    customElement.onShow();
                 }
-
-                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
-                    objectVariables.push(match[1]);
-                }
-
-                const display = obj.getAttribute('tsf-if-display') || "block";
-
-                // Set initial value
-                if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
-                    obj.style.display = display;
-                    for(const customElement of TSFRepository.getCustomElements(obj)) {
-                        customElement.onShow();
-                    }
-                } else {
-                    obj.style.display = "none";
-                }
-                // Listen for changes in the JS variable and transfer them to the DOM
-                for (const variableName of controllerVariables) {
-                    const f = () => {
-                        if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
-                            obj.style.display = display;
-                            for(const customElement of TSFRepository.getCustomElements(obj)) {
-                                if(customElement.onShow)
-                                    customElement.onShow();
-                            }
-                        } else {
-                            obj.style.display = "none";
+            } else {
+                obj.style.display = "none";
+            }
+            // Listen for changes in the JS variable and transfer them to the DOM
+            for (const variableName of controllerVariables) {
+                const f = () => {
+                    if (this.eval(attributeValue, obj)) {
+                        obj.style.display = display;
+                        for (const customElement of TSFRepository.getCustomElements(obj)) {
+                            if (customElement.onShow)
+                                customElement.onShow();
                         }
-                    };
-                    this.state.registerDomChangeListener(variableName, f);
-                }
+                    } else {
+                        obj.style.display = "none";
+                    }
+                };
+                this.state.registerDomChangeListener(variableName, f);
+            }
         }
 
         // Set up value binding
@@ -243,20 +248,6 @@ class TSFComponent extends HTMLElement {
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-html').length)) {
             const attributeValue = obj.getAttribute('tsf-html'); // Value to be evaluated
             let renderFunction = obj.getAttribute('tsf-html-render');
-            const controllerVariables = [];
-            const objectVariables = [];
-
-            const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-            const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
-
-            let match;
-            while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
-                controllerVariables.push(match[1]);
-            }
-
-            while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
-                objectVariables.push(match[1]);
-            }
 
             let that = window;
             if (renderFunction && renderFunction.startsWith('this.')) {
@@ -264,12 +255,15 @@ class TSFComponent extends HTMLElement {
                 renderFunction = renderFunction.substr(5);
             }
 
+            let result, controllerVariables, objectVariables;
+            [result, controllerVariables, objectVariables] = this.eval(attributeValue, obj, true);
+
             // Set initial value
-            obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj, controllerVariables, objectVariables)) : this.eval(attributeValue, obj, controllerVariables, objectVariables);
+            obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj)) : result;
             // Listen for changes in the JS variable and transfer them to the DOM
             for (const variableName of controllerVariables) {
                 const f = () => {
-                    obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj, controllerVariables, objectVariables)) : this.eval(attributeValue, obj, controllerVariables, objectVariables);
+                    obj.innerHTML = renderFunction ? that[renderFunction].call(that, this.eval(attributeValue, obj)) : this.eval(attributeValue, obj);
                 };
                 this.state.registerDomChangeListener(variableName, f);
             }
@@ -282,27 +276,16 @@ class TSFComponent extends HTMLElement {
             for (const attribute of attributes) {
                 const attributeName = attribute.name.substr(19);
                 const attributeValue = attribute.value; // Value to be evaluated
-                const controllerVariables = [];
-                const objectVariables = [];
-
-                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
-
-                let match;
-                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
-                    controllerVariables.push(match[1]);
-                }
-
-                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
-                    objectVariables.push(match[1]);
-                }
+                
+                let result, controllerVariables, objectVariables;
+                [result, controllerVariables, objectVariables] = this.eval(attributeValue, obj, true);
 
                 // Set initial value
-                obj.setAttribute(attributeName, this.eval(attributeValue, obj, controllerVariables, objectVariables));
+                obj.setAttribute(attributeName, result);
                 // Listen for changes in the JS variable and transfer them to the DOM
                 for (const variableName of controllerVariables) {
                     const f = () => {
-                        obj.setAttribute(attributeName, this.eval(attributeValue, obj, controllerVariables, objectVariables));
+                        obj.setAttribute(attributeName, this.eval(attributeValue, obj));
                     };
                     this.state.registerDomChangeListener(variableName, f);
                 }
@@ -316,23 +299,12 @@ class TSFComponent extends HTMLElement {
             for (const attribute of attributes) {
                 const attributeName = attribute.name.substr(27);
                 const attributeValue = attribute.value; // Value to be evaluated
-                const controllerVariables = [];
-                const objectVariables = [];
 
-                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
-
-                let match;
-                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
-                    controllerVariables.push(match[1]);
-                }
-
-                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
-                    objectVariables.push(match[1]);
-                }
+                let result, controllerVariables, objectVariables;
+                [result, controllerVariables, objectVariables] = this.eval(attributeValue, obj, true);
 
                 // Set initial value
-                if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                if (result) {
                     obj.setAttribute(attributeName, null);
                 } else {
                     obj.removeAttribute(attributeName);
@@ -340,7 +312,7 @@ class TSFComponent extends HTMLElement {
                 // Listen for changes in the JS variable and transfer them to the DOM
                 for (const variableName of controllerVariables) {
                     const f = () => {
-                        if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                        if (this.eval(attributeValue, obj)) {
                             obj.setAttribute(attributeName, null);
                         } else {
                             obj.removeAttribute(attributeName);
@@ -358,23 +330,12 @@ class TSFComponent extends HTMLElement {
             for (const attribute of attributes) {
                 const attributeName = attribute.name.substr(15);
                 const attributeValue = attribute.value; // Value to be evaluated
-                const controllerVariables = [];
-                const objectVariables = [];
-
-                const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
-
-                let match;
-                while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
-                    controllerVariables.push(match[1]);
-                }
-
-                while ((match = objectVariablesRegex.exec(attributeValue)) !== null) {
-                    objectVariables.push(match[1]);
-                }
+                
+                let result, controllerVariables, objectVariables;
+                [result, controllerVariables, objectVariables] = this.eval(attributeValue, obj, true);
 
                 // Set initial value
-                if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                if (result) {
                     obj.classList.add(attributeName);
                 } else {
                     obj.classList.remove(attributeName);
@@ -382,7 +343,7 @@ class TSFComponent extends HTMLElement {
                 // Listen for changes in the JS variable and transfer them to the DOM
                 for (const variableName of controllerVariables) {
                     const f = () => {
-                        if (this.eval(attributeValue, obj, controllerVariables, objectVariables)) {
+                        if (this.eval(attributeValue, obj)) {
                             obj.classList.add(attributeName);
                         } else {
                             obj.classList.remove(attributeName);
@@ -401,22 +362,10 @@ class TSFComponent extends HTMLElement {
                 const eventName = attribute.name.substr(18);
                 let functionName = attribute.value;
                 let variableName = /\((.+?)\)/.exec(functionName);
-                const controllerVariables = [];
-                const objectVariables = [];
+                let result, controllerVariables, objectVariables;
 
                 if (variableName) {
-                    const controllerVariablesRegex = /this\.(.[A-z|_]+)/g;
-                    const objectVariablesRegex = /local\.(.[A-z|_|\.]+)/g;
-
-                    let match;
-                    while ((match = controllerVariablesRegex.exec(variableName[1])) !== null) {
-                        controllerVariables.push(match[1]);
-                    }
-
-                    while ((match = objectVariablesRegex.exec(variableName[1])) !== null) {
-                        objectVariables.push(match[1]);
-                    }
-
+                    [result, controllerVariables, objectVariables] = this.eval(variableName[1], obj, true);
                     functionName = functionName.replace(variableName[0], "");
                 }
 
@@ -428,7 +377,7 @@ class TSFComponent extends HTMLElement {
 
                 obj.addEventListener(eventName, e => {
                     if (variableName) {
-                        that[functionName].call(that, e, this.eval(variableName[1], obj, controllerVariables, objectVariables));
+                        that[functionName].call(that, e, this.eval(variableName[1], obj));
                     } else {
                         that[functionName].call(that, e);
                     }
@@ -449,12 +398,12 @@ class TSFComponent extends HTMLElement {
                 obj.removeChild(obj.firstChild);
             }
 
-            if(this.state[variableName] && this.state[variableName].length > 1) {
-                const value = this.state[variableName] ;
+            if (this.state[variableName] && this.state[variableName].length > 1) {
+                const value = this.state[variableName];
                 for (let index = 0; index < value.length; index++) {
                     const node = template.content.cloneNode(true);
                     obj.appendChild(node);
-    
+
                     for (const child of obj.querySelectorAll('*')) {
                         child[loopName] = child[loopName] || [index, value];
                     }
@@ -484,14 +433,14 @@ class TSFComponent extends HTMLElement {
     mapProperties(obj, template) {
         const result = [];
 
-        for(let prop of Object.keys(obj)) {
+        for (let prop of Object.keys(obj)) {
             template[prop] = obj[prop];
         }
 
-        if(template.nodeName.startsWith('TSF-'))
+        if (template.nodeName.startsWith('TSF-'))
             result.push(template);
 
-        for(let i = 0; i < obj.children.length; i++) {
+        for (let i = 0; i < obj.children.length; i++) {
             result.push(...this.mapProperties(obj.children[i], template.children[i]));
         }
 
