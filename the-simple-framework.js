@@ -72,7 +72,7 @@ class TSFProxy {
     }
 
     static generateProxies(target, key, value) {
-        if (!value || typeof value !== 'object') {
+        if (!value || ["Object", "Array"].indexOf(value.constructor.name) < 0) {
             return value;
         }
 
