@@ -42,6 +42,8 @@ class TSFRepository {
 }
 
 class TSFProxy {
+    static comparisons = {}
+    
     constructor() {
         this._jsChange = {};// handle the change of the JS element
         this._domChange = {}; // handle the change of the DOM element
@@ -71,6 +73,23 @@ class TSFProxy {
         this._domChange[name] = callback;
     }
 
+    static compare(a, b) {
+        const constructorNameA = a.constructor.name;
+        const constructorNameB = b.constructor.name;
+
+        if(constructorNameA !== constructorNameB)
+            return false;
+
+        if(TSFProxy.comparisons[constructorNameA])
+            return TSFProxy.comparisons[constructorNameA](a, b);
+        
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    static registerComparison(name, func) {
+        TSFProxy.comparisons[name] = func;
+    }
+
     static generateProxies(target, key, value) {
         if (!value || ["Object", "Array"].indexOf(value.constructor.name) < 0) {
             return value;
@@ -92,7 +111,7 @@ class TSFProxy {
             },
             set: function (target, key, value) {
                 value = TSFProxy.generateProxies(target, key, value);
-                if(JSON.stringify(target[key]) === JSON.stringify(value)) // Nothing changed
+                if(TSFProxy.compare(target[key], value)) // Nothing changed
                     return true;
 
                 target[key] = value;
