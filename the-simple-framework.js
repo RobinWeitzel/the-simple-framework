@@ -93,7 +93,7 @@ class TSFProxy {
             set: function (target, key, value) {
                 value = TSFProxy.generateProxies(target, key, value);
                 if(JSON.stringify(target[key]) === JSON.stringify(value)) // Nothing changed
-                    return false;
+                    return true;
 
                 target[key] = value;
                 if (context) {
