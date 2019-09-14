@@ -13,43 +13,45 @@
     <div class="header">
         <h1>The Simple Framework</h1>
         <div class="example">
-            <div class="left">
-                <div class="code-header">
-                    Javascript
-                </div>
-                <div class="code">
-                    <pre
-                        style="margin: 0; line-height: 125%"><span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
-    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">input</span> <span style="color: rgb(197, 165, 197);">tsf-value=</span><span style="color: rgb(141, 200, 145);">&quot;this.counter&quot;</span> <span style="color: rgb(197, 165, 197);">type=</span><span style="color: rgb(141, 200, 145);">&quot;text&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>input<span style="color: rgb(136, 198, 190);">&gt;</span></span>
-    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">button</span> <span style="color: rgb(197, 165, 197);">tsf-bind-function-click=</span><span style="color: rgb(141, 200, 145);">&quot;this.click&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span></span>Counter++<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>button<span style="color: rgb(136, 198, 190);">&gt;</span></span>
-    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">p</span> <span style="color: rgb(197, 165, 197);">tsf-html=</span><span style="color: rgb(141, 200, 145);">&quot;&#39;The counter is :&#39; + this.counter&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>p<span style="color: rgb(136, 198, 190);">&gt;</span></span>
-<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;</span>/tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+            <div class="code-container">
+                <div class="left">
+                    <div class="code-header">
+                        Javascript
+                    </div>
+                    <div class="code">
+                        <pre
+                            style="margin: 0; line-height: 125%"><span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+        <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">input</span> <span style="color: rgb(197, 165, 197);">tsf-value=</span><span style="color: rgb(141, 200, 145);">&quot;this.counter&quot;</span> <span style="color: rgb(197, 165, 197);">type=</span><span style="color: rgb(141, 200, 145);">&quot;text&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>input<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+        <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">button</span> <span style="color: rgb(197, 165, 197);">tsf-bind-function-click=</span><span style="color: rgb(141, 200, 145);">&quot;this.click&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span></span>Counter++<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>button<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+        <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">p</span> <span style="color: rgb(197, 165, 197);">tsf-html=</span><span style="color: rgb(141, 200, 145);">&quot;&#39;The counter is :&#39; + this.counter&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>p<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+    <span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;</span>/tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
 
-<span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script </span><span style="color: rgb(197, 165, 197);">src=</span><span style="color: rgb(141, 200, 145);">&quot;./the-simple-framework.js&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span>
-<span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script</span><span style="color: rgb(136, 198, 190);">&gt;</span>
-    TSFRepository.<span style="color: rgb(121, 182, 242);">registerComponent</span><span style="color: rgb(136, 198, 190);">(</span><span style="color: rgb(197, 165, 197);">class</span> <span style="color: rgb(250, 200, 99);">Example</span> <span style="color: rgb(197, 165, 197);">extends</span> <span style="color: rgb(250, 200, 99);">TSFComponent</span> <span style="color: rgb(136, 198, 190);">{</span>
-        <span style="color: rgb(121, 182, 242);">constructor</span> <span style="color: rgb(136, 198, 190);">() {</span> 
-            <span style="color: rgb(121, 182, 242);">super</span><span style="color: rgb(136, 198, 190);">();</span> 
-            <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">=</span> <span style="color: rgb(90, 155, 207);">0</span><span style="color: rgb(136, 198, 190);">;</span>
-        <span style="color: rgb(136, 198, 190);">}</span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script </span><span style="color: rgb(197, 165, 197);">src=</span><span style="color: rgb(141, 200, 145);">&quot;./the-simple-framework.js&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+        TSFRepository.<span style="color: rgb(121, 182, 242);">registerComponent</span><span style="color: rgb(136, 198, 190);">(</span><span style="color: rgb(197, 165, 197);">class</span> <span style="color: rgb(250, 200, 99);">Example</span> <span style="color: rgb(197, 165, 197);">extends</span> <span style="color: rgb(250, 200, 99);">TSFComponent</span> <span style="color: rgb(136, 198, 190);">{</span>
+            <span style="color: rgb(121, 182, 242);">constructor</span> <span style="color: rgb(136, 198, 190);">() {</span> 
+                <span style="color: rgb(121, 182, 242);">super</span><span style="color: rgb(136, 198, 190);">();</span> 
+                <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">=</span> <span style="color: rgb(90, 155, 207);">0</span><span style="color: rgb(136, 198, 190);">;</span>
+            <span style="color: rgb(136, 198, 190);">}</span>
 
-        <span style="color: rgb(121, 182, 242);">click</span><span style="color: rgb(136, 198, 190);">(</span>e<span style="color: rgb(136, 198, 190);">) {</span>
-            <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">+=</span> <span style="color: rgb(90, 155, 207);">1</span><span style="color: rgb(136, 198, 190);">;</span>
-        <span style="color: rgb(136, 198, 190);">}</span>
-    <span style="color: rgb(136, 198, 190);">});</span>
-<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span></pre>
+            <span style="color: rgb(121, 182, 242);">click</span><span style="color: rgb(136, 198, 190);">(</span>e<span style="color: rgb(136, 198, 190);">) {</span>
+                <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">+=</span> <span style="color: rgb(90, 155, 207);">1</span><span style="color: rgb(136, 198, 190);">;</span>
+            <span style="color: rgb(136, 198, 190);">}</span>
+        <span style="color: rgb(136, 198, 190);">});</span>
+    <span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span></pre>
+                    </div>
                 </div>
-            </div>
-            <div class="right">
-                <div class="code-header">
-                    Result
-                </div>
-                <div class="code">
-                    <tsf-example>
-                        <input tsf-value="this.counter" type="text" style="width:50px;"/>
-                        <button tsf-bind-function-click="this.click">Counter++</button>
-                        <p tsf-html="'The counter is: ' + this.counter"></p>
-                    </tsf-example>
+                <div class="right">
+                    <div class="code-header">
+                        Result
+                    </div>
+                    <div class="code">
+                        <tsf-example>
+                            <input tsf-value="this.counter" type="text" style="width:50px;"/>
+                            <button tsf-bind-function-click="this.click">Counter++</button>
+                            <p tsf-html="'The counter is: ' + this.counter"></p>
+                        </tsf-example>
+                    </div>
                 </div>
             </div>
         </div>

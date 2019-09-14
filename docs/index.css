@@ -40,6 +40,12 @@ body {
     border-radius: 10px;
 }
 
+.code-container {
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .left {
     flex: 1;
     max-width: 558.98px;
@@ -58,12 +64,13 @@ body {
     background-color: rgb(40, 44, 52);
     border-radius: 0px 0px 0px 10px;
     color: white;
-    height: 304px;
 }
 
 .right {
     flex: 1;
     max-width: 230px;
+    display: flex;
+    flex-direction: column;
 }
 
 .right > .code-header {
@@ -79,9 +86,9 @@ body {
     padding: 15px;
     background-color: white;
     border-radius: 0px 0px 10px 0px;
-    height: 304px;
     display: flex;
     justify-content: center;
+    height: 100%;
 }
 
 .content {
@@ -117,12 +124,14 @@ body {
 
 .main {
     width: 100%;
-    max-width: 900px;
+    max-width: 920px;
     margin-bottom: 40px;
 }
 
 .main > h2 {
+    margin: 10px;
     margin-top: 40px;
+    margin-bottom: 0px;
 }
 
 .main pre {
@@ -132,6 +141,7 @@ body {
     padding: 10px 20px !important;
     border: #EEE 1px solid;
     border-radius: 10px;
+    margin: 10px;
 }
 
 hr {
@@ -147,4 +157,9 @@ pre {
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.main > p {
+    margin-left: 10px;
+    margin-right: 10px;
 }
