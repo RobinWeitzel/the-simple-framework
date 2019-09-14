@@ -271,7 +271,7 @@ class TSFComponent extends HTMLElement {
 
         // Set up value binding
         for (const obj of objects.filter(e => Array.from(e.attributes).filter(({ name, value }) => name === 'tsf-value').length)) {
-            const variableName = obj.getAttribute('tsf-value');
+            const variableName = obj.getAttribute('tsf-value').replace("this.", "");
 
             // Listen for changes in the JS variable and transfer them to the DOM
             this.state.registerDomChangeListener(variableName, value => {
@@ -284,7 +284,12 @@ class TSFComponent extends HTMLElement {
 
             // Listen for changes in the DOM and transfer them to js
             obj.oninput = event => {
-                const newValue = obj.value;
+                let val = obj.value;
+
+                if(!isNaN(val))
+                    val = Number(val);
+
+                const newValue = val;
                 obj.value = this.state[variableName]; // Keep old value until js value changes
                 this.state._jsChange[variableName](newValue);
             }
