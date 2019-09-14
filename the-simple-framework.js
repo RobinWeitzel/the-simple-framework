@@ -74,16 +74,25 @@ class TSFProxy {
     }
 
     static compare(a, b) {
-        const constructorNameA = a.constructor.name;
-        const constructorNameB = b.constructor.name;
-
-        if(constructorNameA !== constructorNameB)
-            return false;
-
-        if(TSFProxy.comparisons[constructorNameA])
-            return TSFProxy.comparisons[constructorNameA](a, b);
+        if(a === undefined && b === undefined)
+            return true;
         
-        return JSON.stringify(a) === JSON.stringify(b);
+        if(a === null && b === null)
+            return true;
+        try {
+            const constructorNameA = a.constructor.name;
+            const constructorNameB = b.constructor.name;
+
+            if(constructorNameA !== constructorNameB)
+                return false;
+
+            if(TSFProxy.comparisons[constructorNameA])
+                return TSFProxy.comparisons[constructorNameA](a, b);
+            
+            return JSON.stringify(a) === JSON.stringify(b);
+        } catch(e) {
+            return false;
+        }
     }
 
     static registerComparison(name, func) {
@@ -171,7 +180,7 @@ class TSFComponent extends HTMLElement {
         const objectVariables = [];
 
         const controllerVariablesRegex = /this\.(.[a-zA-Z|_]+)/g;
-        const objectVariablesRegex = /local\.(.[a-zA-Z|_|\.]+)/g;
+        const objectVariablesRegex = /local\.(.[a-zA-Z|_|\:]+)/g;
 
         let match;
         while ((match = controllerVariablesRegex.exec(attributeValue)) !== null) {
@@ -188,15 +197,15 @@ class TSFComponent extends HTMLElement {
         }
 
         for (let variable of objectVariables) {
-            const indexOnly = variable.endsWith('.index');
+            const indexOnly = variable.endsWith(':index');
             if (indexOnly)
-                variable = variable.replace('.index', '');
+                variable = variable.replace(':index', '');
 
             if (obj[variable] && obj[variable].length === 2) {
                 const index = obj[variable][0];
                 const array = obj[variable][1];
                 if (indexOnly)
-                    toBeEvaluated = toBeEvaluated.replace('local.' + variable + '.index', index);
+                    toBeEvaluated = toBeEvaluated.replace('local.' + variable + ':index', index);
                 else {
                     args.push(array[index]);
                     toBeEvaluated = toBeEvaluated.replace('local.' + variable, `args[${args.length - 1}]`);
@@ -428,42 +437,46 @@ class TSFComponent extends HTMLElement {
             const attributeContent = obj.getAttribute('tsf-for-of');
             const loopName = attributeContent.split('of')[0].trim();
             const variableName = attributeContent.split('of')[1].trim();
-
+            let result, controllerVariables, objectVariables;
+            [result, controllerVariables, objectVariables] = this.eval(variableName, obj, true);
+            
             let template = document.createElement('template');
             template.innerHTML = obj.innerHTML;
             while (obj.firstChild) {
                 obj.removeChild(obj.firstChild);
             }
 
-            if (this.state[variableName] && this.state[variableName].length > 1) {
-                const value = this.state[variableName];
-                for (let index = 0; index < value.length; index++) {
+            if (result && result.length > 0) {
+                for (let index = 0; index < result.length; index++) {
                     const node = template.content.cloneNode(true);
                     obj.appendChild(node);
 
                     for (const child of obj.querySelectorAll('*')) {
-                        child[loopName] = child[loopName] || [index, value];
+                        child[loopName] = child[loopName] || [index, result];
                     }
                 }
                 this.attachBindings(obj);
             }
 
-            // Listen for changes in the JS variable and transfer them to the DOM
-            this.state.registerDomChangeListener(variableName, value => {
-                while (obj.firstChild) {
-                    obj.removeChild(obj.firstChild);
-                }
-
-                for (let index = 0; index < value.length; index++) {
-                    const node = template.content.cloneNode(true);
-                    obj.appendChild(node);
-
-                    for (const child of obj.querySelectorAll('*')) {
-                        child[loopName] = child[loopName] || [index, value];
+            for (const vn of controllerVariables) {
+                // Listen for changes in the JS variable and transfer them to the DOM
+                this.state.registerDomChangeListener(vn, () => {
+                    const value = this.eval(variableName, obj);
+                    while (obj.firstChild) {
+                        obj.removeChild(obj.firstChild);
                     }
-                }
-                this.attachBindings(obj);
-            });
+
+                    for (let index = 0; index < value.length; index++) {
+                        const node = template.content.cloneNode(true);
+                        obj.appendChild(node);
+
+                        for (const child of obj.querySelectorAll('*')) {
+                            child[loopName] = child[loopName] || [index, value];
+                        }
+                    }
+                    this.attachBindings(obj);
+                });
+            }
         }
     }
 
