@@ -42,6 +42,7 @@ body {
 
 .left {
     flex: 1;
+    max-width: 558.98px;
 }
 
 .left > .code-header {
@@ -53,7 +54,6 @@ body {
 
 .left > .code {
     overflow:auto;
-    width: 528.98px;
     padding: 15px;
     background-color: rgb(40, 44, 52);
     border-radius: 0px 0px 0px 10px;
@@ -63,6 +63,7 @@ body {
 
 .right {
     flex: 1;
+    max-width: 230px;
 }
 
 .right > .code-header {
@@ -79,7 +80,6 @@ body {
     background-color: white;
     border-radius: 0px 0px 10px 0px;
     height: 304px;
-    min-width: 200px;
     display: flex;
     justify-content: center;
 }
@@ -116,7 +116,8 @@ body {
 }
 
 .main {
-    width: 900px;
+    width: 100%;
+    max-width: 900px;
     margin-bottom: 40px;
 }
 
@@ -138,4 +139,12 @@ hr {
     border: 0;
     border-bottom: #fff 1px solid;
     border-top: #f0f0f0 1px solid;
+}
+
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }

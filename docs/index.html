@@ -21,7 +21,7 @@
                     <pre
                         style="margin: 0; line-height: 125%"><span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
     <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">input</span> <span style="color: rgb(197, 165, 197);">tsf-value=</span><span style="color: rgb(141, 200, 145);">&quot;this.counter&quot;</span> <span style="color: rgb(197, 165, 197);">type=</span><span style="color: rgb(141, 200, 145);">&quot;text&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>input<span style="color: rgb(136, 198, 190);">&gt;</span></span>
-    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">button</span> <span style="color: rgb(197, 165, 197);">tsf-bind-function-click=</span><span style="color: rgb(141, 200, 145);">&quot;this.click&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span></span>Increase Counter<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>button<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">button</span> <span style="color: rgb(197, 165, 197);">tsf-bind-function-click=</span><span style="color: rgb(141, 200, 145);">&quot;this.click&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span></span>Counter++<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>button<span style="color: rgb(136, 198, 190);">&gt;</span></span>
     <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">p</span> <span style="color: rgb(197, 165, 197);">tsf-html=</span><span style="color: rgb(141, 200, 145);">&quot;&#39;The counter is :&#39; + this.counter&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>p<span style="color: rgb(136, 198, 190);">&gt;</span></span>
 <span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;</span>/tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
 
@@ -46,8 +46,8 @@
                 </div>
                 <div class="code">
                     <tsf-example>
-                        <input tsf-value="this.counter" type="text" />
-                        <button tsf-bind-function-click="this.click">Increase Counter</button>
+                        <input tsf-value="this.counter" type="text" style="width:50px;"/>
+                        <button tsf-bind-function-click="this.click">Counter++</button>
                         <p tsf-html="'The counter is: ' + this.counter"></p>
                     </tsf-example>
                 </div>
