@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Simple Framework</title>
+    <link rel="stylesheet" href="index.css" type="text/css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>The Simple Framework</h1>
+        <div class="example">
+            <div class="left">
+                <div class="code-header">
+                    Javascript
+                </div>
+                <div class="code">
+                    <pre
+                        style="margin: 0; line-height: 125%"><span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">input</span> <span style="color: rgb(197, 165, 197);">tsf-value=</span><span style="color: rgb(141, 200, 145);">&quot;this.counter&quot;</span> <span style="color: rgb(197, 165, 197);">type=</span><span style="color: rgb(141, 200, 145);">&quot;text&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>input<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">button</span> <span style="color: rgb(197, 165, 197);">tsf-bind-function-click=</span><span style="color: rgb(141, 200, 145);">&quot;this.click&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span></span>Increase Counter<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>button<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+    <span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">p</span> <span style="color: rgb(197, 165, 197);">tsf-html=</span><span style="color: rgb(141, 200, 145);">&quot;&#39;The counter is :&#39; + this.counter&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;</span><span style="color: rgb(136, 198, 190);">&lt;/</span>p<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;</span>/tsf-example</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+
+<span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script </span><span style="color: rgb(197, 165, 197);">src=</span><span style="color: rgb(141, 200, 145);">&quot;./the-simple-framework.js&quot;</span><span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&gt;&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span>
+<span style="color: rgb(136, 198, 190);">&lt;</span><span style="color: rgb(252, 146, 158);">script</span><span style="color: rgb(136, 198, 190);">&gt;</span>
+    TSFRepository.<span style="color: rgb(121, 182, 242);">registerComponent</span><span style="color: rgb(136, 198, 190);">(</span><span style="color: rgb(197, 165, 197);">class</span> <span style="color: rgb(250, 200, 99);">Example</span> <span style="color: rgb(197, 165, 197);">extends</span> <span style="color: rgb(250, 200, 99);">TSFComponent</span> <span style="color: rgb(136, 198, 190);">{</span>
+        <span style="color: rgb(121, 182, 242);">constructor</span> <span style="color: rgb(136, 198, 190);">() {</span> 
+            <span style="color: rgb(121, 182, 242);">super</span><span style="color: rgb(136, 198, 190);">();</span> 
+            <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">=</span> <span style="color: rgb(90, 155, 207);">0</span><span style="color: rgb(136, 198, 190);">;</span>
+        <span style="color: rgb(136, 198, 190);">}</span>
+
+        <span style="color: rgb(121, 182, 242);">click</span><span style="color: rgb(136, 198, 190);">(</span>e<span style="color: rgb(136, 198, 190);">) {</span>
+            <span style="color: rgb(197, 165, 197);">this</span>.state.counter <span style="color: rgb(136, 198, 190);">+=</span> <span style="color: rgb(90, 155, 207);">1</span><span style="color: rgb(136, 198, 190);">;</span>
+        <span style="color: rgb(136, 198, 190);">}</span>
+    <span style="color: rgb(136, 198, 190);">});</span>
+<span style="color: rgb(252, 146, 158);"><span style="color: rgb(136, 198, 190);">&lt;/</span>script<span style="color: rgb(136, 198, 190);">&gt;</span></span></pre>
+                </div>
+            </div>
+            <div class="right">
+                <div class="code-header">
+                    Result
+                </div>
+                <div class="code">
+                    <tsf-example>
+                        <input tsf-value="this.counter" type="text" />
+                        <button tsf-bind-function-click="this.click">Increase Counter</button>
+                        <p tsf-html="'The counter is: ' + this.counter"></p>
+                    </tsf-example>
+                </div>
+            </div>
+        </div>
+        <h3>Angular-like functionality without all the fuss</h3>
+    </div>
+    <div class="content">
+        <div class="row">
+            <a href="../the-simple-framework.zip" class="btn" style="margin-right: 20px;">Download Zip</a>
+            <a href="https://github.com/RobinWeitzel/the-simple-framework" class="btn">View on Github</a>
+        </div>
+        <div class="main">
+            <h2>Create components using custom elements</h2>
+            <pre><span style="color: #007700">&lt;tsf</span><span style="color: #0000CC">-example</span><span style="color: #007700">&gt;</span><span style="color: #007700">&lt;/tsf</span><span style="color: #0000CC">-example</span><span style="color: #007700">&gt;</span>
+<span style="color: #007700">&lt;script&gt;</span>
+    TSFRepository.registerComponent(<span style="color: #008800;">class</span> Example <span style="color: #008800;">extends</span> TSFComponent {
+        constructor() {
+            <span style="color: #008800;">super</span>();
+        }
+    });
+<span style="color: #007700">&lt;/script&gt;</span></pre>
+
+            <h2>One- and two-way bindings via state</h2>
+            <pre>constructor() {
+    <span style="color: #008800; font-weight: bold">super</span>();
+    <span style="color: #008800; font-weight: bold">this</span>.state.persons <span style="color: #333333">=</span> [{
+        name<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&quot;Roland Brice&quot;</span>,
+        age<span style="color: #333333">:</span> <span style="color: #0000DD; font-weight: bold">39</span>,
+        children<span style="color: #333333">:</span> [
+            <span style="background-color: #fff0f0">&quot;Namond&quot;</span>
+        ]
+    },
+    {
+        name<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&quot;William A. Rawls&quot;</span>,
+        age<span style="color: #333333">:</span> <span style="color: #0000DD; font-weight: bold">58</span>,
+        children<span style="color: #333333">:</span> [
+        ]
+    }];
+}</pre>
+
+            <h2>Wide range of functionalities via custom attributes</h2>
+            <pre><span style="color: #007700">&lt;tsf</span><span style="color: #0000CC">-example</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">tsf-for-of=</span><span style="background-color: #fff0f0">&quot;person of this.persons&quot;</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;div&gt;</span>
+        <span style="color: #007700">&lt;p&gt;</span>ID: <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">tsf-html=</span><span style="background-color: #fff0f0">&quot;local.person:index&quot;</span><span style="color: #007700">&gt;&lt;/span&gt;&lt;/p&gt;</span>
+        <span style="color: #007700">&lt;p&gt;</span>Name: <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">tsf-html=</span><span style="background-color: #fff0f0">&quot;local.person.name&quot;</span><span style="color: #007700">&gt;&lt;/span&gt;&lt;/p&gt;</span>
+        <span style="color: #007700">&lt;p</span> <span style="color: #0000CC">tsf-html=</span><span style="background-color: #fff0f0">&quot;&#39;Age: &#39; + local.person.age&quot;</span><span style="color: #007700">&gt;&lt;/p&gt;</span>
+        <span style="color: #007700">&lt;h3</span> <span style="color: #0000CC">tsf-if=</span><span style="background-color: #fff0f0">&quot;local.person.children.length &gt; 0&quot;</span><span style="color: #007700">&gt;</span>Children: <span style="color: #007700">&lt;/h5&gt;</span>
+        <span style="color: #007700">&lt;div</span><span style="color: #0000CC"> tsf-for-of=</span><span style="background-color: #fff0f0">&quot;child of local.person.children&quot;</span><span style="color: #007700">&gt;</span>
+            <span style="color: #007700">&lt;p</span> <span style="color: #0000CC">tsf-html=</span><span style="background-color: #fff0f0">&quot;local.child&quot;</span><span style="color: #007700">&gt;&lt;/p&gt;</span>
+        <span style="color: #007700">&lt;/div&gt;</span>
+    <span style="color: #007700">&lt;/div&gt;</span>
+<span style="color: #007700">&lt;/div&gt;</span>
+<span style="color: #007700">&lt;tsf/</span><span style="color: #0000CC">-example</span><span style="color: #007700">&gt;</span></pre>
+
+            <hr />
+
+            <p>Check out the <a href="#">docs</a> for detailed information.</p>
+            <p>Visit my Github or send me an email if you found bugs or miss a feature.</p>
+        </div>
+    </div>
+    <script src="../the-simple-framework.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

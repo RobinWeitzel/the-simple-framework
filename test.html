@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <tsf-example>
+        <div tsf-for-of="person of this.persons">
+            <div>
+                <p>ID: <span tsf-html="local.person:index"></span></p>
+                <p>Name: <span tsf-html="local.person.name"></span></p>
+                <p tsf-html="'Age: ' + local.person.age"></p>
+                <h3 tsf-if="local.person.children.length > 0">Children: </h5>
+                <div tsf-for-of="child of local.person.children">
+                    <p tsf-html="local.child"></p>
+                </div>
+            </div>
+        </div>
+    </tsf-example>
+
+    <script src="./the-simple-framework.js"></script>
+
+    <script>
+        TSFRepository.registerComponent(class Example extends TSFComponent {
+            constructor() {
+                super();
+                this.state.persons = [{
+                    name: "Roland Brice",
+                    age: 39,
+                    children: [
+                        "Namond"
+                    ]
+                },
+                {
+                    name: "William A. Rawls",
+                    age: 58,
+                    children: [
+                    ]
+                }];
+            }
+        });
+    </script>
+</body>
+
+</html>
