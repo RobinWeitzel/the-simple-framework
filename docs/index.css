@@ -42,13 +42,12 @@ body {
 
 .code-container {
     display: flex;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 
 .left {
     flex: 1;
     max-width: 558.98px;
+    width: 60vw;
 }
 
 .left > .code-header {
@@ -69,6 +68,7 @@ body {
 .right {
     flex: 1;
     max-width: 230px;
+    width: 40vw;
     display: flex;
     flex-direction: column;
 }
