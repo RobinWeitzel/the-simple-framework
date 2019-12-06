@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     entry: './src/the-simple-framework.js',
     output: {
         filename: 'the-simple-framework.js',
