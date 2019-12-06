@@ -1,10 +1,10 @@
 {
   "name": "the-simple-framework",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "A simple alternative to massive frameworks like Angular.",
   "main": "the-simple-framework.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,22 @@
   "bugs": {
     "url": "https://github.com/RobinWeitzel/the-simple-framework/issues"
   },
-  "homepage": "https://github.com/RobinWeitzel/the-simple-framework#readme"
+  "homepage": "https://github.com/RobinWeitzel/the-simple-framework#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-transform-arrow-functions": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/standalone": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@webcomponents/custom-elements": "^1.3.1",
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "lodash": "^4.17.15"
+  }
 }
