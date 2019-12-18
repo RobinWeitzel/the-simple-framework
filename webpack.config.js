@@ -4,7 +4,7 @@ module.exports = {
     mode: "production",
     entry: './src/the-simple-framework.js',
     output: {
-        filename: 'the-simple-framework.js',
+        filename: 'the-simple-framework-es5.js',
         path: path.resolve(__dirname, 'dist'),
         library: "TSF",
         libraryTarget: 'umd',
