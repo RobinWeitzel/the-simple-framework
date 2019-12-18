@@ -1,5 +1,3 @@
-require("@webcomponents/custom-elements");
-
 class Repository {
     static classes = new Map();
 
@@ -540,4 +538,4 @@ const init = () => {
     }
 }
 
-export { Repository, Component, init }
+export { Repository, Component, init, TSFProxy as Proxy }
