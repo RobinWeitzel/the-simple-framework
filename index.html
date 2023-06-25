@@ -11,17 +11,9 @@
 
 <body>
     <tsf-example>
-        <div tsf-for-of="person of this.persons">
-            <div>
-                <p>ID: <span tsf-html="local.person:index"></span></p>
-                <p>Name: <span tsf-html="local.person.name"></span></p>
-                <p tsf-html="'Age: ' + local.person.age"></p>
-                <h3 tsf-if="local.person.children.length > 0">Children: </h5>
-                    <div tsf-for-of="child of local.person.children">
-                        <p tsf-html="local.child"></p>
-                    </div>
-            </div>
-        </div>
+        <select tsf-for-of="person of this.persons">
+           <option tsf-html="local.person.name"></option>
+        </select>
     </tsf-example>
 
     <script src="./dist/the-simple-framework.js"></script>

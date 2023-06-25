@@ -456,6 +456,16 @@ class Component extends HTMLElement {
             if (result && result.length > 0) {
                 for (let index = 0; index < result.length; index++) {
                     const node = template.content.cloneNode(true);
+
+                    const el  = document.createElement(obj.nodeName);
+                    const arr = Object.keys(obj).filter(function(prop) {
+                        return !(prop in el);
+                    });
+
+                    for(const a of arr) {
+                        node[a] = obj[a];
+                    }
+
                     obj.appendChild(node);
 
                     for (const child of obj.querySelectorAll('*')) {
