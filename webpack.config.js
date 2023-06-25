@@ -7,7 +7,7 @@ module.exports = {
         filename: 'the-simple-framework.js',
         path: path.resolve(__dirname, 'dist'),
         library: "TSF",
-        libraryTarget: 'umd',
+        libraryTarget: 'amd',
     },
     module: {
         rules: [

@@ -1,5 +1,3 @@
-require("@webcomponents/custom-elements");
-
 class Repository {
     static classes = new Map();
 
