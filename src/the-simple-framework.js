@@ -1,3 +1,5 @@
+// require("@webcomponents/custom-elements");
+
 class Repository {
     static classes = new Map();
 
@@ -460,14 +462,13 @@ class Component extends HTMLElement {
                         return !(prop in el);
                     });
 
-                    for(const a of arr) {
-                        node[a] = obj[a];
-                    }
-
                     obj.appendChild(node);
 
                     for (const child of obj.querySelectorAll('*')) {
                         child[loopName] = child[loopName] || [index, result];
+                        for(const a of arr) {
+                            child[a] = obj[a];
+                        }
                     }
                 }
                 this.attachBindings(obj);
